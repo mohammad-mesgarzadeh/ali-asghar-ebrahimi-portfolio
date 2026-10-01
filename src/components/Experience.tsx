@@ -1,118 +1,249 @@
-import { motion } from 'framer-motion';
-import { experiences } from '../data/experience';
+import { motion, useReducedMotion } from 'framer-motion';
+import type { Variants } from 'framer-motion';
 import { MapPin, Calendar } from 'lucide-react';
+import { experiences } from '../data/experience';
 
-export const Experience = () => {
-  const containerVariants = {
-    hidden: { opacity: 0 },
+type Experience = (typeof experiences)[number];
+
+/**
+ * The data has no explicit "current" flag, so a position is treated as current
+ * only when its end date reads like "now" (اکنون / تاکنون / حال حاضر / present).
+ * Adjust this one pattern if your data uses different wording.
+ */
+const CURRENT_PATTERN = /کنون|حال[\s\u200c]*حاضر|present|current/i;
+const isCurrent = (exp: Experience) => CURRENT_PATTERN.test(String(exp.endDate));
+
+/* ------------------------------------------------------------------ */
+/* Timeline marker: square node with a thin outer ring                 */
+/* ------------------------------------------------------------------ */
+const TimelineMarker = ({ current }: { current: boolean }) => (
+  <span
+    aria-hidden="true"
+    className={`flex h-5 w-5 items-center justify-center border border-accent/40 bg-dark-bg transition-colors duration-300 group-hover:border-accent ${
+      current ? 'outline outline-1 outline-offset-[3px] outline-accent/40' : ''
+    }`}
+  >
+    <span
+      className={`h-1.5 w-1.5 transition-transform duration-300 group-hover:scale-125 ${
+        current ? 'bg-accent' : 'border border-accent bg-dark-bg'
+      }`}
+    />
+  </span>
+);
+
+/* ------------------------------------------------------------------ */
+/* Single experience entry                                             */
+/* ------------------------------------------------------------------ */
+interface ExperienceItemProps {
+  exp: Experience;
+  index: number;
+  reduceMotion: boolean;
+}
+
+const ExperienceItem = ({ exp, index, reduceMotion }: ExperienceItemProps) => {
+  const current = isCurrent(exp);
+  // Desktop: alternate sides. In RTL, grid column 1 is the right-hand side.
+  const placement =
+    index % 2 === 0
+      ? 'md:col-start-1 md:pr-0 md:pl-8 lg:pl-12'
+      : 'md:col-start-3 md:pr-8 lg:pr-12';
+
+  const itemVariants: Variants = {
+    hidden: {},
     visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-        delayChildren: 0.1,
-      },
+      transition: { staggerChildren: reduceMotion ? 0 : 0.12, delayChildren: Math.min(index, 2) * 0.08 },
     },
   };
-
-  const itemVariants = {
-    hidden: { opacity: 0, x: -20 },
-    visible: {
-      opacity: 1,
-      x: 0,
-      transition: { duration: 0.6 },
-    },
+  const markerVariants: Variants = {
+    hidden: { opacity: 0, scale: reduceMotion ? 1 : 0.6 },
+    visible: { opacity: 1, scale: 1, transition: { duration: 0.5, ease: 'easeOut' } },
+  };
+  const contentVariants: Variants = {
+    hidden: { opacity: 0, y: reduceMotion ? 0 : 20 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: 'easeOut' } },
   };
 
   return (
-    <section id="experience" className="relative py-20 md:py-28 bg-gradient-to-b from-charcoal to-dark-bg border-b border-gray-800">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.div
-          variants={containerVariants}
+    <motion.li
+      variants={itemVariants}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, amount: 0.15 }}
+      className="group relative md:grid md:grid-cols-[1fr_2.5rem_1fr]"
+    >
+      {/* Marker: right edge on mobile, centre column on desktop */}
+      <motion.div
+        variants={markerVariants}
+        className="absolute right-0 top-[-10px] z-10 md:static md:col-start-2 md:row-start-1 md:-mt-2.5 md:justify-self-center"
+      >
+        <TimelineMarker current={current} />
+      </motion.div>
+
+      <motion.article
+        variants={contentVariants}
+        className={`relative min-w-0 border-t border-accent/15 pr-10 pt-6 md:row-start-1 ${placement}`}
+      >
+        {/* Hover rule draws in from the start edge */}
+        <span
+          aria-hidden="true"
+          className="absolute right-0 top-[-1px] h-px w-0 bg-accent transition-all duration-500 group-hover:w-full"
+        />
+
+        <motion.div whileHover={reduceMotion ? undefined : { y: -3 }} transition={{ duration: 0.3 }}>
+          {/* Technical index + current status */}
+          <div className="flex items-center justify-between gap-4">
+            <span dir="ltr" className="font-mono text-[11px] tracking-[0.25em] text-accent/70">
+              EXP / {String(index + 1).padStart(2, '0')}
+            </span>
+            {current && (
+              <span className="flex items-center gap-2 text-xs font-medium text-accent">
+                <span aria-hidden="true" className="h-1.5 w-1.5 bg-accent" />
+                فعلی
+              </span>
+            )}
+          </div>
+
+          {/* 1. Position  2. Company */}
+          <h3 className="heading-3 mt-3 text-gray-100 transition-colors duration-300 group-hover:text-white">
+            {exp.position}
+          </h3>
+          <p className="mt-1.5 text-base font-medium text-accent md:text-lg">{exp.company}</p>
+
+          {/* 3. Location / date / duration */}
+          <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-gray-400">
+            <span className="flex items-center gap-2">
+              <MapPin aria-hidden="true" size={15} strokeWidth={1.5} className="shrink-0 text-accent" />
+              {exp.location}
+            </span>
+            <span className="flex items-center gap-2">
+              <Calendar aria-hidden="true" size={15} strokeWidth={1.5} className="shrink-0 text-accent" />
+              {exp.startDate} - {exp.endDate}
+            </span>
+            <span className="flex items-center gap-2">
+              <span aria-hidden="true" className="h-px w-4 bg-accent/40" />
+              {exp.duration}
+            </span>
+          </div>
+
+          {/* 4. Responsibilities */}
+          {exp.responsibilities && exp.responsibilities.length > 0 && (
+            <ul
+              aria-label="مسئولیت‌ها"
+              className="mt-5 space-y-2.5 border-r border-accent/20 pr-4"
+            >
+              {exp.responsibilities.map((resp, idx) => (
+                <li key={`${exp.id}-${idx}`} className="relative text-sm leading-7 text-gray-300">
+                  <span
+                    aria-hidden="true"
+                    className="absolute -right-4 top-3.5 h-px w-2.5 bg-accent/50 transition-colors duration-300 group-hover:bg-accent"
+                  />
+                  {resp}
+                </li>
+              ))}
+            </ul>
+          )}
+        </motion.div>
+      </motion.article>
+    </motion.li>
+  );
+};
+
+/* ------------------------------------------------------------------ */
+/* Section                                                             */
+/* ------------------------------------------------------------------ */
+export const Experience = () => {
+  const reduceMotion = useReducedMotion() ?? false;
+
+  const headerVariants: Variants = {
+    hidden: { opacity: 0, y: reduceMotion ? 0 : 16 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: 'easeOut' } },
+  };
+  const lineVariants: Variants = {
+    hidden: { scaleX: reduceMotion ? 1 : 0 },
+    visible: { scaleX: 1, transition: { duration: 1, ease: 'easeOut' } },
+  };
+  const spineVariants: Variants = {
+    hidden: { scaleY: reduceMotion ? 1 : 0 },
+    visible: { scaleY: 1, transition: { duration: 1.4, ease: 'easeOut' } },
+  };
+
+  return (
+    <section
+      id="experience"
+      className="relative overflow-hidden border-b border-gray-800 bg-gradient-to-b from-charcoal to-dark-bg py-20 md:py-28"
+    >
+      {/* Blueprint grid, same language as About and the Hero canvas */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0"
+        style={{
+          backgroundImage: `linear-gradient(0deg, rgba(212,132,79,.03) 1px, transparent 1px), linear-gradient(90deg, rgba(212,132,79,.03) 1px, transparent 1px)`,
+          backgroundSize: '24px 24px',
+          maskImage: 'radial-gradient(ellipse at 50% 50%, black 20%, transparent 75%)',
+          WebkitMaskImage: 'radial-gradient(ellipse at 50% 50%, black 20%, transparent 75%)',
+        }}
+      />
+
+      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        {/* Header */}
+        <motion.header
+          variants={headerVariants}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, amount: 0.1 }}
-          className="space-y-8 md:space-y-12"
+          viewport={{ once: true, amount: 0.3 }}
+          className="mb-14 space-y-6 md:mb-20"
         >
-          {/* Section Title */}
-          <motion.div variants={itemVariants}>
-            <h2 className="heading-2">تجربه کاری</h2>
-            <div className="w-12 h-1 bg-accent mt-4 rounded-full" />
-          </motion.div>
-
-          {/* Timeline */}
-          <div className="relative space-y-8 md:space-y-6">
-            {/* Vertical Line */}
-            <div className="absolute right-6 md:right-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-accent via-accent/50 to-transparent" />
-
-            {/* Experience Items */}
+          <div className="flex items-center gap-4">
+            <span dir="ltr" className="font-mono text-[11px] tracking-[0.25em] text-accent/80">
+              02 / EXPERIENCE
+            </span>
             <motion.div
-              variants={containerVariants}
-              className="space-y-6"
+              variants={lineVariants}
+              style={{ originX: 1 }}
+              aria-hidden="true"
+              className="relative h-px flex-1 bg-accent/25"
             >
-              {experiences.map((exp, index) => (
-                <motion.div
-                  key={exp.id}
-                  variants={itemVariants}
-                  className={`relative flex gap-6 md:gap-12 ${
-                    index % 2 === 0 ? 'md:flex-row-reverse' : ''
-                  }`}
-                >
-                  {/* Timeline Dot */}
-                  <div className="absolute right-2 md:right-1/2 md:translate-x-1/2 top-6 w-4 h-4 bg-accent rounded-full border-4 border-dark-bg z-10" />
-
-                  {/* Content */}
-                  <div className={`w-full md:w-1/2 ${index % 2 === 0 ? 'md:pr-12' : 'md:pl-12 md:text-right'} pr-16 md:pr-0`}>
-                    <motion.div
-                      whileHover={{ y: -4 }}
-                      className="p-6 border border-gray-700 rounded-lg hover:border-accent/50 bg-charcoal/50 hover:bg-charcoal/70 transition-all duration-300 group"
-                    >
-                      {/* Position */}
-                      <h3 className="heading-3 text-accent group-hover:text-accent-light transition-colors">
-                        {exp.position}
-                      </h3>
-
-                      {/* Company */}
-                      <p className="text-lg font-semibold text-gray-300 mt-2">
-                        {exp.company}
-                      </p>
-
-                      {/* Location & Duration */}
-                      <div className="flex flex-col gap-2 mt-3 text-sm text-gray-400">
-                        <div className="flex items-center gap-2">
-                          <MapPin size={16} className="text-accent flex-shrink-0" />
-                          <span>{exp.location}</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Calendar size={16} className="text-accent flex-shrink-0" />
-                          <span>
-                            {exp.startDate} - {exp.endDate}
-                          </span>
-                        </div>
-                        <p className="text-accent font-medium mt-2">
-                          {exp.duration}
-                        </p>
-                      </div>
-
-                      {/* Responsibilities */}
-                      {exp.responsibilities && exp.responsibilities.length > 0 && (
-                        <div className="mt-4 pt-4 border-t border-gray-600">
-                          <ul className="space-y-2">
-                            {exp.responsibilities.map((resp, idx) => (
-                              <li key={idx} className="flex gap-3 text-sm text-gray-400">
-                                <span className="text-accent flex-shrink-0">•</span>
-                                <span>{resp}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      )}
-                    </motion.div>
-                  </div>
-                </motion.div>
-              ))}
+              <span
+                className="absolute inset-x-0 top-0 h-1.5"
+                style={{
+                  backgroundImage:
+                    'repeating-linear-gradient(90deg, rgba(212,132,79,.35) 0 1px, transparent 1px 12px)',
+                }}
+              />
+              <span className="absolute left-0 top-1/2 h-1.5 w-1.5 -translate-y-1/2 bg-accent" />
             </motion.div>
           </div>
-        </motion.div>
+          <h2 className="heading-2">تجربه کاری</h2>
+        </motion.header>
+
+        {/* Timeline */}
+        <div className="relative">
+          {/* Spine: right edge on mobile, centre on desktop */}
+          <motion.div
+            aria-hidden="true"
+            variants={spineVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.05 }}
+            style={{ originY: 0 }}
+            className="absolute bottom-0 right-[9.5px] top-0 w-px bg-gradient-to-b from-accent/40 via-accent/20 to-transparent md:left-[calc(50%-0.5px)] md:right-auto"
+          />
+          {/* Measurement ticks along the desktop spine */}
+          <div
+            aria-hidden="true"
+            className="absolute inset-y-0 left-[calc(50%-6px)] hidden w-3 md:block"
+            style={{
+              backgroundImage:
+                'repeating-linear-gradient(0deg, rgba(212,132,79,.2) 0 1px, transparent 1px 16px)',
+            }}
+          />
+
+          <ol className="space-y-10 md:space-y-14">
+            {experiences.map((exp, index) => (
+              <ExperienceItem key={exp.id} exp={exp} index={index} reduceMotion={reduceMotion} />
+            ))}
+          </ol>
+        </div>
       </div>
     </section>
   );
