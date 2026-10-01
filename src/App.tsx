@@ -25,29 +25,66 @@ function App() {
     contact: useRef<HTMLDivElement>(null),
   };
 
-  const handleNavClick = (sectionId: string) => {
-    const ref = sectionRefs[sectionId as keyof typeof sectionRefs];
-    if (ref?.current) {
-      const offset = 80; // navbar height
-      const topPosition = ref.current.offsetTop - offset;
-      window.scrollTo({
-        top: topPosition,
-        behavior: 'smooth',
-      });
-    }
+  /**
+   * Scroll to top of the page
+   */
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
   };
 
-  const handleCtaClick = (type: 'portfolio' | 'contact') => {
+  /**
+   * Scroll to a specific section
+   */
+  const handleNavClick = (sectionId: string) => {
+    // Home / Logo
+    if (sectionId === 'home') {
+      scrollToTop();
+      return;
+    }
+
+    const ref =
+      sectionRefs[sectionId as keyof typeof sectionRefs];
+
+    if (!ref?.current) return;
+
+    const navbarHeight = 80;
+
+    const topPosition =
+      ref.current.getBoundingClientRect().top +
+      window.scrollY -
+      navbarHeight;
+
+    window.scrollTo({
+      top: topPosition,
+      behavior: 'smooth',
+    });
+  };
+
+  /**
+   * Hero CTA buttons
+   */
+  const handleCtaClick = (
+    type: 'portfolio' | 'contact'
+  ) => {
     if (type === 'contact') {
       handleNavClick('contact');
-    } else if (type === 'portfolio') {
+      return;
+    }
+
+    if (type === 'portfolio') {
       handleNavClick('experience');
     }
   };
 
+  /**
+   * Set Persian RTL document
+   */
   useEffect(() => {
-    // Set HTML lang and dir attributes
     const htmlElement = document.documentElement;
+
     htmlElement.setAttribute('lang', 'fa');
     htmlElement.setAttribute('dir', 'rtl');
   }, []);
@@ -57,27 +94,46 @@ function App() {
       <Navbar onNavClick={handleNavClick} />
 
       <main>
-        <Hero onCtaClick={handleCtaClick} />
+        {/* HOME */}
+        <section id="home">
+          <Hero onCtaClick={handleCtaClick} />
+        </section>
+
+        {/* STATS */}
         <Stats />
-        <div ref={sectionRefs.about}>
+
+        {/* ABOUT */}
+        <div ref={sectionRefs.about} id="about">
           <About />
         </div>
-        <div ref={sectionRefs.experience}>
+
+        {/* EXPERIENCE */}
+        <div ref={sectionRefs.experience} id="experience">
           <Experience />
         </div>
-        <div ref={sectionRefs.projects}>
+
+        {/* PROJECTS */}
+        <div ref={sectionRefs.projects} id="projects">
           <Projects />
         </div>
-        <div ref={sectionRefs.skills}>
+
+        {/* SKILLS */}
+        <div ref={sectionRefs.skills} id="skills">
           <Skills />
         </div>
-        <div ref={sectionRefs.software}>
+
+        {/* SOFTWARE */}
+        <div ref={sectionRefs.software} id="software">
           <Software />
         </div>
-        <div ref={sectionRefs.education}>
+
+        {/* EDUCATION */}
+        <div ref={sectionRefs.education} id="education">
           <Education />
         </div>
-        <div ref={sectionRefs.contact}>
+
+        {/* CONTACT */}
+        <div ref={sectionRefs.contact} id="contact">
           <Contact />
         </div>
       </main>
@@ -88,4 +144,3 @@ function App() {
 }
 
 export default App;
-
