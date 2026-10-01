@@ -46,8 +46,11 @@ export const Navbar = ({ onNavClick }: NavbarProps) => {
   ];
 
   const handleNavClick = (id: string) => {
-    onNavClick?.(id);
     setIsMobileMenuOpen(false);
+
+    setTimeout(() => {
+      onNavClick?.(id);
+    }, 300);
   };
 
   const handleContactClick = () => {
@@ -66,10 +69,9 @@ export const Navbar = ({ onNavClick }: NavbarProps) => {
         transition-all
         duration-300
         ease-out
-        ${
-          isScrolled
-            ? 'bg-white/[0.03] border-b border-white/10'
-            : 'bg-white/[0.02] border-b border-transparent'
+        ${isScrolled
+          ? 'bg-white/[0.03] border-b border-white/10'
+          : 'bg-white/[0.02] border-b border-transparent'
         }
       `}
     >
