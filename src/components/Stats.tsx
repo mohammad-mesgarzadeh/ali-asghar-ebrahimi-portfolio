@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { motion, type Variants } from 'framer-motion';
 
 interface Stat {
   value: string;
@@ -25,8 +25,10 @@ export const Stats = () => {
     },
   ];
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
+  const containerVariants: Variants = {
+    hidden: {
+      opacity: 0,
+    },
     visible: {
       opacity: 1,
       transition: {
@@ -35,7 +37,7 @@ export const Stats = () => {
     },
   };
 
-  const itemVariants = {
+  const itemVariants: Variants = {
     hidden: {
       opacity: 0,
       y: 20,

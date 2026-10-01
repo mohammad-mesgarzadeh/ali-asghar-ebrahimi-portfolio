@@ -17,7 +17,6 @@ const FONT_SMALL = `8px ${MONO}`;
 
 const TAU = Math.PI * 2;
 
-const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
 
 /* ------------------------------------------------------------------ */
 /* Types                                                               */

@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { motion, type Variants } from 'framer-motion';
 import {
   ArrowDown,
   ArrowLeft,
@@ -13,7 +13,7 @@ interface HeroProps {
 }
 
 export const Hero = ({ onCtaClick }: HeroProps) => {
-  const containerVariants = {
+  const containerVariants: Variants = {
     hidden: {
       opacity: 0,
     },
@@ -26,7 +26,7 @@ export const Hero = ({ onCtaClick }: HeroProps) => {
     },
   };
 
-  const itemVariants = {
+  const itemVariants: Variants = {
     hidden: {
       opacity: 0,
       y: 18,
@@ -55,10 +55,8 @@ export const Hero = ({ onCtaClick }: HeroProps) => {
         border-gray-800
       "
     >
-      {/* Engineering Canvas Background */}
       <EngineeringCanvasBackground />
 
-      {/* Subtle Technical Grid */}
       <div
         aria-hidden="true"
         className="
@@ -76,7 +74,6 @@ export const Hero = ({ onCtaClick }: HeroProps) => {
         }}
       />
 
-      {/* Technical Corner Marker — Top Left */}
       <div
         aria-hidden="true"
         className="
@@ -93,7 +90,6 @@ export const Hero = ({ onCtaClick }: HeroProps) => {
         "
       />
 
-      {/* Technical Corner Marker — Bottom Right */}
       <div
         aria-hidden="true"
         className="
@@ -110,7 +106,6 @@ export const Hero = ({ onCtaClick }: HeroProps) => {
         "
       />
 
-      {/* Main Content */}
       <div
         className="
           relative
@@ -140,12 +135,8 @@ export const Hero = ({ onCtaClick }: HeroProps) => {
             items-center
           "
         >
-          {/* =====================================================
-              LEFT — MAIN INTRO
-          ====================================================== */}
-
+          {/* LEFT — MAIN INTRO */}
           <div className="lg:col-span-8">
-            {/* Section Label */}
             <motion.div variants={itemVariants}>
               <div className="flex items-center gap-3 mb-6">
                 <span
@@ -167,7 +158,6 @@ export const Hero = ({ onCtaClick }: HeroProps) => {
               </div>
             </motion.div>
 
-            {/* Name */}
             <motion.div variants={itemVariants}>
               <p className="text-sm md:text-base text-gray-500 mb-4">
                 مهندس عمران
@@ -190,7 +180,6 @@ export const Hero = ({ onCtaClick }: HeroProps) => {
               </h1>
             </motion.div>
 
-            {/* Professional Position */}
             <motion.div
               variants={itemVariants}
               className="mt-7 md:mt-9 max-w-3xl"
@@ -237,7 +226,6 @@ export const Hero = ({ onCtaClick }: HeroProps) => {
               </p>
             </motion.div>
 
-            {/* CTA */}
             <motion.div
               variants={itemVariants}
               className="
@@ -293,10 +281,7 @@ export const Hero = ({ onCtaClick }: HeroProps) => {
             </motion.div>
           </div>
 
-          {/* =====================================================
-              RIGHT — ENGINEERING PROFILE
-          ====================================================== */}
-
+          {/* RIGHT — ENGINEERING PROFILE */}
           <motion.div
             variants={itemVariants}
             className="lg:col-span-4"
@@ -313,7 +298,6 @@ export const Hero = ({ onCtaClick }: HeroProps) => {
                 md:p-7
               "
             >
-              {/* Decorative Technical Line */}
               <div
                 aria-hidden="true"
                 className="
@@ -326,7 +310,6 @@ export const Hero = ({ onCtaClick }: HeroProps) => {
                 "
               />
 
-              {/* Panel Header */}
               <div
                 className="
                   flex
@@ -340,11 +323,7 @@ export const Hero = ({ onCtaClick }: HeroProps) => {
                 <div className="flex items-center gap-3">
                   <span
                     aria-hidden="true"
-                    className="
-                      w-1.5
-                      h-1.5
-                      bg-accent
-                    "
+                    className="w-1.5 h-1.5 bg-accent"
                   />
 
                   <span
@@ -370,9 +349,7 @@ export const Hero = ({ onCtaClick }: HeroProps) => {
                 </span>
               </div>
 
-              {/* Technical Information */}
               <div className="divide-y divide-gray-800">
-                {/* Field */}
                 <div className="flex items-center gap-4 py-5">
                   <div
                     className="
@@ -413,7 +390,6 @@ export const Hero = ({ onCtaClick }: HeroProps) => {
                   </div>
                 </div>
 
-                {/* Specialization */}
                 <div className="flex items-center gap-4 py-5">
                   <div
                     className="
@@ -454,7 +430,6 @@ export const Hero = ({ onCtaClick }: HeroProps) => {
                   </div>
                 </div>
 
-                {/* Experience */}
                 <div className="flex items-center gap-4 py-5">
                   <div
                     className="
@@ -496,7 +471,6 @@ export const Hero = ({ onCtaClick }: HeroProps) => {
                 </div>
               </div>
 
-              {/* Technical Footer */}
               <div className="pt-5 border-t border-gray-800">
                 <div
                   className="
@@ -510,14 +484,11 @@ export const Hero = ({ onCtaClick }: HeroProps) => {
                   "
                 >
                   <span>TEHRAN</span>
-
                   <span>IRAN</span>
-
                   <span>AE-01</span>
                 </div>
               </div>
 
-              {/* Corner Detail */}
               <div
                 aria-hidden="true"
                 className="
@@ -532,7 +503,6 @@ export const Hero = ({ onCtaClick }: HeroProps) => {
                 "
               />
 
-              {/* Bottom Corner Detail */}
               <div
                 aria-hidden="true"
                 className="
@@ -550,10 +520,7 @@ export const Hero = ({ onCtaClick }: HeroProps) => {
           </motion.div>
         </motion.div>
 
-        {/* =====================================================
-            BOTTOM META
-        ====================================================== */}
-
+        {/* BOTTOM META */}
         <motion.div
           variants={itemVariants}
           className="
@@ -567,7 +534,6 @@ export const Hero = ({ onCtaClick }: HeroProps) => {
             border-gray-800
           "
         >
-          {/* Technical Label */}
           <div className="flex items-center gap-3">
             <span
               aria-hidden="true"
@@ -587,7 +553,6 @@ export const Hero = ({ onCtaClick }: HeroProps) => {
             </span>
           </div>
 
-          {/* Scroll Button */}
           <motion.button
             type="button"
             onClick={() => onCtaClick?.('portfolio')}
