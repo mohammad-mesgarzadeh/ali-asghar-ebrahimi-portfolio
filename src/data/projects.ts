@@ -21,7 +21,7 @@ export const projects: Project[] = [
       'فعالیت در پروژه صنعتی پتروشیمی و پالایشگاه فراسکو به‌عنوان مهندس اجرایی پروژه، با مسئولیت نظارت و پیگیری مستقیم امور اجرایی تحت مدیریت و نظارت مستقیم مدیرعامل.',
     year: '۱۴۰۴',
     image:
-      '/ali-asghar-ebrahimi-portfolio/images/photo_2026-09-13_21-03-39.jpg',
+      '/ali-asghar-ebrahimi-portfolio/images/photo_2026-09-13_21-03-39.webp',
     category: 'صنعتی',
   },
   {
@@ -33,7 +33,7 @@ export const projects: Project[] = [
     description:
       'سرپرستی و نظارت بر اجرای عملیات ساختمانی پروژه آشیانه ریاست جمهوری نیروی هوایی ایران در فرودگاه مهرآباد، شامل هماهنگی فعالیت‌های اجرایی، کنترل کیفیت و پیشبرد مراحل ساخت پروژه.',
     year: '۱۳۹۸ - ۱۴۰۰',
-    image: '/ali-asghar-ebrahimi-portfolio/images/photo_2026-10-01_18-02-09.jpg',
+    image: '/ali-asghar-ebrahimi-portfolio/images/photo_2026-10-01_18-02-09.webp',
     category: 'ساختمانی',
   },
   {
@@ -52,7 +52,7 @@ export const projects: Project[] = [
 
     year: '۱۴۰۰/۰۲ - ۱۴۰۰/۰۶',
 
-    image: '/ali-asghar-ebrahimi-portfolio/images/photo_2026-10-01_18-03-50.png',
+    image: '/ali-asghar-ebrahimi-portfolio/images/photo_2026-10-01_18-03-50.webp',
     category: 'بازسازی',
   },
 ];
