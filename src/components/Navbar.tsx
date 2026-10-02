@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Building2, Menu, X } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 
 interface NavbarProps {
   onNavClick?: (sectionId: string) => void;
@@ -48,9 +48,10 @@ export const Navbar = ({ onNavClick }: NavbarProps) => {
   const handleNavClick = (id: string) => {
     setIsMobileMenuOpen(false);
 
-    setTimeout(() => {
+    // بدون delay برای عملکرد بهتر روی موبایل
+    requestAnimationFrame(() => {
       onNavClick?.(id);
-    }, 300);
+    });
   };
 
   const handleContactClick = () => {
@@ -100,7 +101,7 @@ export const Navbar = ({ onNavClick }: NavbarProps) => {
             "
             aria-label="بازگشت به صفحه اصلی"
           >
-            {/* Logo Mark */}
+            {/* Logo Container */}
             <span
               className="
                 relative
@@ -109,24 +110,31 @@ export const Navbar = ({ onNavClick }: NavbarProps) => {
                 justify-center
                 w-10
                 h-10
+                sm:w-11
+                sm:h-11
+                overflow-hidden
+                rounded-md
                 border
                 border-gray-700
-                text-accent
+                bg-white/[0.02]
                 transition-all
                 duration-300
                 group-hover:border-accent/60
                 group-hover:bg-accent/[0.04]
               "
             >
-              <Building2
-                size={21}
-                strokeWidth={1.5}
-                aria-hidden="true"
+              {/* Actual Logo */}
+              <img
+                src="/ali-asghar-ebrahimi-portfolio/images/1790967260113(2).jpg"
+                alt="لوگوی علی اصغر ابراهیمی"
                 className="
-                  transition-transform
-                  duration-300
-                  group-hover:scale-110
-                "
+    w-full
+    h-full
+    object-cover
+    transition-transform
+    duration-300
+    group-hover:scale-110
+  "
               />
 
               {/* Top Right Technical Corner */}
@@ -141,6 +149,7 @@ export const Navbar = ({ onNavClick }: NavbarProps) => {
                   border-t
                   border-r
                   border-accent
+                  pointer-events-none
                 "
               />
 
@@ -156,6 +165,7 @@ export const Navbar = ({ onNavClick }: NavbarProps) => {
                   border-b
                   border-l
                   border-accent/50
+                  pointer-events-none
                 "
               />
 
@@ -169,6 +179,7 @@ export const Navbar = ({ onNavClick }: NavbarProps) => {
                   w-1
                   h-1
                   bg-accent/60
+                  pointer-events-none
                 "
               />
             </span>
@@ -292,6 +303,8 @@ export const Navbar = ({ onNavClick }: NavbarProps) => {
               focus:outline-none
               focus-visible:ring-2
               focus-visible:ring-accent
+              relative
+              z-[60]
             "
             aria-label={
               isMobileMenuOpen
@@ -370,9 +383,7 @@ export const Navbar = ({ onNavClick }: NavbarProps) => {
                   <motion.button
                     key={item.id}
                     type="button"
-                    onClick={() =>
-                      handleNavClick(item.id)
-                    }
+                    onClick={() => handleNavClick(item.id)}
                     initial={{
                       opacity: 0,
                       x: 15,
@@ -397,6 +408,7 @@ export const Navbar = ({ onNavClick }: NavbarProps) => {
                       text-gray-300
                       hover:text-white
                       hover:bg-white/5
+                      active:bg-white/10
                       transition-all
                       duration-200
                       focus:outline-none
